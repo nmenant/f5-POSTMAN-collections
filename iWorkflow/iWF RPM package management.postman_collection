@@ -1,0 +1,331 @@
+{
+	"variables": [],
+	"info": {
+		"name": "iWF RPM package management",
+		"_postman_id": "5e16e484-d222-8313-ec95-718be987f887",
+		"description": "Collection to create/install/delete a RPM in iWF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request a Token from iWorkflow",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
+							"",
+							"postman.setEnvironmentVariable('iWorkflow1_Auth_Token',respData.token.token);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authn/login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\",\n  \"loginProvidername\": \"tmos\"\n}"
+				},
+				"description": "Using Basic Auth, request a token from the iWorkflow platform."
+			},
+			"response": []
+		},
+		{
+			"name": "Increase Auth Token Timeout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var respData = JSON.parse(responseBody);",
+							"tests[\"Auth Token timeout is: \" +respData.timeout] = respData.timeout;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeout\":\"36000\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create RPM on iWF",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has id: \" +respData.id] = respData.id;",
+							"",
+							"tests[\"appName is: \" + respData.appName] = respData.appName;",
+							"",
+							"tests[\"App package version is: \" + respData.packageVersion] = respData.packageVersion;",
+							"",
+							"tests[\"App package release is: \" + respData.packageRelease] = respData.packageRelease;",
+							"",
+							"postman.setEnvironmentVariable('rpm-creation-status-id',respData.id);",
+							"",
+							"var rpm_name = respData.appName + \"-\" +respData.packageVersion + \"-\" + respData.packageRelease +\".noarch\";",
+							"",
+							"postman.setEnvironmentVariable('rpm-name', rpm_name);",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/build-package",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"appName\": {{app-name}}\n}"
+				},
+				"description": "the app name used here is the name of the folder for your code in /var/config/rest/iapps"
+			},
+			"response": []
+		},
+		{
+			"name": "Check RPM creation process",
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/build-package/{{rpm-creation-status-id}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "Check the status of the RPM creation process"
+			},
+			"response": []
+		},
+		{
+			"name": "install RPM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has id: \" +respData.id] = respData.id;",
+							"",
+							"postman.setEnvironmentVariable('rpm-installation-status-id',respData.id);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\"operation\": \"INSTALL\",\r\"packageFilePath\": \"/var/config/rest/downloads/{{rpm-name}}.rpm\"\r}"
+				},
+				"description": "will install the RPM on iWF. \n\nthe file need to be in /var/config/rest/downloads/ or it will be rejected"
+			},
+			"response": []
+		},
+		{
+			"name": "Check RPM installation process status",
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks/{{rpm-installation-status-id}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Check installed RPM",
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/global-installed-packages",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"operation\": \"INSTALL\",\n \"packageName\": {{ rpm-path-filename }}\n}"
+				},
+				"description": "Will list the RPM installed on iWF"
+			},
+			"response": []
+		},
+		{
+			"name": "Check block iapps",
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/blocks",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"operation\": \"INSTALL\",\n \"packageName\": {{ rpm-path-filename }}\n}"
+				},
+				"description": "Will list deployment and templates"
+			},
+			"response": []
+		},
+		{
+			"name": "Uninstall RPM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has id: \" +respData.id] = respData.id;",
+							"",
+							"postman.setEnvironmentVariable('rpm-uninstallation-status-id',respData.id);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"operation\": \"UNINSTALL\",\n\"packageName\": {{rpm-name}}\n}"
+				},
+				"description": "will delete the RPM from iWF"
+			},
+			"response": []
+		},
+		{
+			"name": "Check uninstall rpm process status",
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks/{{rpm-uninstallation-status-id}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

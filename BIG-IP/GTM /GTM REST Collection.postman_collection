@@ -1,0 +1,228 @@
+{
+	"variables": [],
+	"info": {
+		"name": "GTM REST Collection",
+		"_postman_id": "f487e99b-a119-74e2-bbaa-b24c488a3f30",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request a Token from GTM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
+							"",
+							"postman.setEnvironmentVariable('GTM_Auth_Token',respData.token.token);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/shared/authn/login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin\",\n  \"loginProvidername\": \"tmos\"\n}"
+				},
+				"description": "Using Basic Auth, request a token from the iWorkflow platform."
+			},
+			"response": []
+		},
+		{
+			"name": "Increase Auth Token Timeout ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var respData = JSON.parse(responseBody);",
+							"tests[\"Auth Token timeout is: \" +respData.timeout] = respData.timeout;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeout\":\"36000\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "List VS created on BIG-IP",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "Create VS on BIG-IP",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\":\"{{app-name}}\",\n\t\"destination\": \"172.16.1.80:80\",\n\t\"monitor\": \"/Common/bigip\"\n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "List Pool (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/pool/a",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\": \"Pool\" , \n\t\"loadBalancingMode\": \"round-robin\", \n\t\"members\": [ \n\t\t{\n\t\t\t\"name\": \"{{bigip-hostname}}:{{app-name}}\" \n\t\t} \n\t] \n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Pool (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/pool/a",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\": \"{{pool-name}}\" , \n\t\"loadBalancingMode\": \"round-robin\", \n\t\"members\": [ \n\t\t{\n\t\t\t\"name\": \"{{bigip-hostname}}:{{app-name}}\" \n\t\t} \n\t] \n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "List wideip (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\": \"Pool\" , \n\t\"loadBalancingMode\": \"round-robin\", \n\t\"members\": [ \n\t\t{\n\t\t\t\"name\": \"{{bigip-hostname}}:{{app-name}}\" \n\t\t} \n\t] \n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create wideip (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic YWRtaW46YWRtaW4=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\":\"{{wideip-name}}\",\n\t\"poolLbMode\": \"global-availability\", \n\t\"pools\": [\n\t\t{ \n\t\t\t\"name\": \"{{pool-name}}\"\n\t\t\t\n\t\t}\n\t] \n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		}
+	]
+}
