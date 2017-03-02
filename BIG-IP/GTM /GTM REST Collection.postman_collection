@@ -55,12 +55,12 @@
 				}
 			],
 			"request": {
-				"url": "https://{{GTM_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/shared/authz/tokens/{{GTM_Auth_Token}}",
 				"method": "PATCH",
 				"header": [
 					{
 						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -78,36 +78,14 @@
 			"response": []
 		},
 		{
-			"name": "List VS created on BIG-IP",
-			"request": {
-				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers",
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": "List bigip registered VS"
-			},
-			"response": []
-		},
-		{
-			"name": "Create VS on BIG-IP",
+			"name": "Create VS on BIG-IP  Server (DNS)",
 			"request": {
 				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers",
 				"method": "POST",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -125,14 +103,14 @@
 			"response": []
 		},
 		{
-			"name": "List Pool (A record)",
+			"name": "List VS created on BIG-IP Server (DNS)",
 			"request": {
-				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/pool/a",
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -141,10 +119,7 @@
 						"description": ""
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{ \n\t\"name\": \"Pool\" , \n\t\"loadBalancingMode\": \"round-robin\", \n\t\"members\": [ \n\t\t{\n\t\t\t\"name\": \"{{bigip-hostname}}:{{app-name}}\" \n\t\t} \n\t] \n}"
-				},
+				"body": {},
 				"description": "List bigip registered VS"
 			},
 			"response": []
@@ -156,8 +131,8 @@
 				"method": "POST",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -175,14 +150,64 @@
 			"response": []
 		},
 		{
+			"name": "List Pool (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/pool/a",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\": \"Pool\" , \n\t\"loadBalancingMode\": \"round-robin\", \n\t\"members\": [ \n\t\t{\n\t\t\t\"name\": \"{{bigip-hostname}}:{{app-name}}\" \n\t\t} \n\t] \n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "Create wideip (A record)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a",
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"name\":\"{{wideip-name}}\",\n\t\"poolLbMode\": \"global-availability\", \n\t\"pools\": [\n\t\t{ \n\t\t\t\"name\": \"{{pool-name}}\"\n\t\t\t\n\t\t}\n\t] \n}"
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
 			"name": "List wideip (A record)",
 			"request": {
 				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a",
 				"method": "GET",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -200,14 +225,14 @@
 			"response": []
 		},
 		{
-			"name": "Create wideip (A record)",
+			"name": "Delete wideip (A record)",
 			"request": {
-				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a",
-				"method": "POST",
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/wideip/a/{{wideip-name}}",
+				"method": "DELETE",
 				"header": [
 					{
-						"key": "Authorization",
-						"value": "Basic YWRtaW46YWRtaW4=",
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
 						"description": ""
 					},
 					{
@@ -218,7 +243,57 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \n\t\"name\":\"{{wideip-name}}\",\n\t\"poolLbMode\": \"global-availability\", \n\t\"pools\": [\n\t\t{ \n\t\t\t\"name\": \"{{pool-name}}\"\n\t\t\t\n\t\t}\n\t] \n}"
+					"raw": ""
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Pool (A record) ",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/pool/a/{{pool-name}}",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "List bigip registered VS"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete VS on BIG-IP Server (DNS)",
+			"request": {
+				"url": "https://{{GTM_Mgmt_IP}}/mgmt/tm/gtm/server/{{bigip-hostname}}/virtual-servers/{{app-name}}",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{GTM_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
 				},
 				"description": "List bigip registered VS"
 			},
