@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "iWF Subscription Collection",
+		"name": "iWF-Subscription-Collection",
 		"_postman_id": "7a356500-87e2-8e04-5049-0b0703f61a72",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
@@ -9,6 +9,22 @@
 	"item": [
 		{
 			"name": "create subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has token: \" +respData.token.token] = respData.token;",
+							"",
+							"postman.setEnvironmentVariable('Subscription_Token',respData.token);",
+							""
+						]
+					}
+				}
+			],
 			"request": {
 				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions",
 				"method": "POST",
@@ -35,7 +51,7 @@
 		{
 			"name": "Check subscription",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/subscriptions",
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions/{{Subscription_Token}}",
 				"method": "GET",
 				"header": [
 					{
