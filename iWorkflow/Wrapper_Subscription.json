@@ -12,8 +12,8 @@
 		"bigip_password":"admin"
 	},
 	"saveEnvVars":true,
-	"outputFile":"Wrapper_Set_Subscription-run.json",
-	"envOutputFile":"Wrapper_Set_Subscription-env.json",
+	"outputFile":"/tmp/Wrapper_Set_Subscription-run.json",
+	"envOutputFile":"/tmp/Wrapper_Set_Subscription-env.json",
 	"workflow": [
 		{
 			"name":"Authenticate to iWorkflow",
