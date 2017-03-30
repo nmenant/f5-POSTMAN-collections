@@ -1,0 +1,25 @@
+{
+  "id": "6ae03f2f-9a51-4caa-b84a-3f5a7dd8987e",
+  "values": [
+    {
+      "type": "any",
+      "value": "192.168.143.25",
+      "key": "iWorkflow_Mgmt_IP"
+    },
+    {
+      "type": "any",
+      "value": "admin",
+      "key": "iwf_username"
+    },
+    {
+      "type": "any",
+      "value": "admin",
+      "key": "iwf_password"
+    },
+    {
+      "type": "any",
+      "value": "UAOGTALI44SPM237Y4TVFOKNMD",
+      "key": "iWorkflow1_Auth_Token"
+    }
+  ]
+}

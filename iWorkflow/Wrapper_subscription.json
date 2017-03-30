@@ -1,0 +1,33 @@
+{
+	"name":"Wrapper_iwf_subscription",
+	"description":"Execute a chained workflow that authenticates to an iWF platform and setup a subscription based on the env variables",
+	"globalEnvVars":"./iWF-Subscription-Collection.postman_environment",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"iWorkflow_Mgmt_IP": "192.168.143.25",
+		"iwf_username":"admin",
+		"iwf_password":"admin"
+	},
+	"saveEnvVars":true,
+	"outputFile":"Wrapper_iwf_subscription-run.json",
+	"envOutputFile":"Wrapper_iwf_subscription-run-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to iWorkflow",
+			"options": {
+				"collection":"./iWF_API_Authentication.postman_collection"
+			}
+		},
+		{
+			"name":"Create the subscription for our REST Worker",
+			"skip":false,
+			"options": {
+				"collection":"iWF-Subscription-Collection.postman_collection"
+			}
+		}
+	]
+}
+
