@@ -1,0 +1,81 @@
+{
+	"variables": [],
+	"info": {
+		"name": "iWF_API_Authentication",
+		"_postman_id": "497ef893-8e71-d349-84e1-ef67690f32c6",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Request a Token from iWorkflow",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
+							"",
+							"postman.setEnvironmentVariable('iWorkflow1_Auth_Token',respData.token.token);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authn/login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": {{iwf_username}},\n  \"password\": {{iwf_password}},\n  \"loginProvidername\": \"tmos\"\n}"
+				},
+				"description": "Using Basic Auth, request a token from the iWorkflow platform."
+			},
+			"response": []
+		},
+		{
+			"name": "Increase Auth Token Timeout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var respData = JSON.parse(responseBody);",
+							"tests[\"Auth Token timeout is: \" +respData.timeout] = respData.timeout;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"timeout\":\"36000\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

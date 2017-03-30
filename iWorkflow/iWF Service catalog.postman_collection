@@ -8,187 +8,135 @@
 	},
 	"item": [
 		{
-			"name": "Request a Token from iWorkflow ",
-			"event": [
+			"name": "Delete service",
+			"description": "",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var respData = JSON.parse(responseBody);",
-							"",
-							"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
-							"",
-							"postman.setEnvironmentVariable('iWorkflow1_Auth_Token',respData.token.token);",
-							""
-						]
-					}
+					"name": "Delete Service App",
+					"request": {
+						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
 				}
-			],
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authn/login",
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"Nicolas\",\n  \"password\": \"cnicolas\",\n  \"loginProvidername\": \"tmos\"\n}"
-				},
-				"description": "Using Basic Auth, request a token from the iWorkflow platform."
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Increase Auth Token Timeout",
-			"event": [
+			"name": "Deploy Service catalog",
+			"description": "",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var respData = JSON.parse(responseBody);",
-							"tests[\"Auth Token timeout is: \" +respData.timeout] = respData.timeout;",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
+					"name": "Deploy Service catalog template",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"response has token: \" +respData.selfLink] = respData.selfLink;",
+									"",
+									"postman.setEnvironmentVariable('service-selflink',respData.selfLink);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/{{svc-catalog-template}}\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__port\",\r\n          \"value\": \"80\"\r\n        },\r\n        {\r\n          \"name\": \"wideip__name\",\r\n          \"value\": \"www.{{service-name}}.com\"\r\n        }\r\n      ],\r\n      \"tables\": [\r\n        {\r\n          \"name\": \"monitor__Monitors\",\r\n          \"columns\": [\r\n            \"Index\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"0\",\r\n              \"/Common/tcp\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Pools\",\r\n          \"columns\": [\r\n            \"LbMethod\",\r\n            \"Monitor\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"round-robin\",\r\n              \"0;1\",\r\n              \"my-rest-pool\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Members\",\r\n          \"columns\": [\r\n            \"IPAddress\",\r\n            \"Port\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"172.16.2.200\",\r\n              \"80\"\r\n            ]\r\n          ]\r\n        }\r\n      ],\r\n      \"properties\": [\r\n        {\r\n          \"id\": \"cloudConnectorReference\",\r\n          \"value\": \"https://localhost/mgmt/cm/cloud/connectors/{{big-ip-connector}}\"\r\n        }\r\n      ]\r\n    }\r\n\r\n"
+						},
 						"description": ""
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"timeout\":\"36000\"\n}"
+					"response": []
 				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Deploy Service catalog template",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var respData = JSON.parse(responseBody);",
-							"",
-							"tests[\"response has token: \" +respData.selfLink] = respData.selfLink;",
-							"",
-							"postman.setEnvironmentVariable('service-selflink',respData.selfLink);",
-							""
-						]
-					}
+					"name": "Check App deployment",
+					"request": {
+						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
 				}
-			],
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp",
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/{{svc-catalog-template}}\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__MemberDefaultPort\",\r\n          \"value\": \"80\"\r\n        },\r\n        {\r\n          \"name\": \"pool__port\",\r\n          \"value\": \"80\"\r\n        },\r\n        {\r\n          \"name\": \"wideip__name\",\r\n          \"value\": \"www.test.com\"\r\n        }\r\n      ],\r\n      \"tables\": [\r\n        {\r\n          \"name\": \"monitor__Monitors\",\r\n          \"columns\": [\r\n            \"Index\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"0\",\r\n              \"/Common/tcp\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Pools\",\r\n          \"columns\": [\r\n            \"LbMethod\",\r\n            \"Monitor\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"round-robin\",\r\n              \"0;1\",\r\n              \"my-rest-pool\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Members\",\r\n          \"columns\": [\r\n            \"IPAddress\",\r\n            \"Port\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"172.16.2.200\",\r\n              \"80\"\r\n            ]\r\n          ]\r\n        }\r\n      ],\r\n      \"properties\": [\r\n        {\r\n          \"id\": \"cloudConnectorReference\",\r\n          \"value\": \"https://localhost/mgmt/cm/cloud/connectors/{{big-ip-connector}}\"\r\n        }\r\n      ]\r\n    }\r\n\r\n"
-				},
-				"description": ""
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Check App deployment",
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
+			"name": "Update Service",
+			"description": "",
+			"item": [
+				{
+					"name": "Change VS IP ",
+					"request": {
+						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/LTM-config-app-services\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__addr\",\r\n          \"value\": \"172.16.1.83\"\r\n        }\r\n      ],\r\n      \"selfLink\": \"{{service-selflink}}\"\r\n    }\r\n\r\n"
+						},
 						"description": ""
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Change VS IP ",
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
-				"method": "PUT",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/LTM-config-app-services\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__addr\",\r\n          \"value\": \"172.16.1.83\"\r\n        }\r\n      ],\r\n      \"selfLink\": \"{{service-selflink}}\"\r\n    }\r\n\r\n"
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Service App",
-			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
-						"description": ""
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"description": ""
-			},
-			"response": []
+					"response": []
+				}
+			]
 		}
 	]
 }
