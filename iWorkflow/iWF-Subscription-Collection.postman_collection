@@ -50,6 +50,17 @@
 		},
 		{
 			"name": "Check subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
 			"request": {
 				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions/{{Subscription_Token}}",
 				"method": "GET",
