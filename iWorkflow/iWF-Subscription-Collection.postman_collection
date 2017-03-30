@@ -42,7 +42,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\"topic\" : \"/mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/\",\r\"subscriber\": \"http://localhost:8105/shared/ipam-dns-placement-handler\"\r}"
+					"raw": "{\r\"topic\" : \"{{subscription_topic}}\",\r\"subscriber\": \"{{subscriber}}\"\r}"
 				},
 				"description": "create a subscription to monitor the deployment of an iApp. if it happens, the subscription will trigger our handler"
 			},
@@ -50,6 +50,39 @@
 		},
 		{
 			"name": "Check subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions/{{Subscription_Token}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-F5-Auth-Token",
+						"value": "{{iWorkflow1_Auth_Token}}",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Check subscription on the relevant uri",
 			"event": [
 				{
 					"listen": "test",
