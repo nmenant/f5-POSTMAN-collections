@@ -1,0 +1,32 @@
+{
+	"name":"Wrapper_Set_Subscription",
+	"description":"Execute a chained workflow that authenticates to an iWorkflow device and set a subscription based on a topic and a REST Worker",
+	"globalEnvVars":"./iWF-Subscription-Collection.postman_environment",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"bigip_mgmt": "192.168.143.25",
+		"bigip_username":"admin",
+		"bigip_password":"admin"
+	},
+	"saveEnvVars":true,
+	"outputFile":"Wrapper_Set_Subscription-run.json",
+	"envOutputFile":"Wrapper_Set_Subscription-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to iWorkflow",
+			"options": {
+				"collection":"./iWF_API_Authentication.postman_collection"
+			}
+		},
+		{
+			"name":"Set a subscription",
+			"skip":false,
+			"options": {
+				"collection":"./iWF-Subscription-Collection.postman_collection"
+			}
+		}
+	]
+}
