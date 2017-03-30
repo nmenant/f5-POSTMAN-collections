@@ -17,7 +17,7 @@
 						"exec": [
 							"var respData = JSON.parse(responseBody);",
 							"",
-							"tests[\"response has token: \" +respData.token.token] = respData.token;",
+							"tests[\"response has token: \" +respData.token] = respData.token;",
 							"",
 							"postman.setEnvironmentVariable('Subscription_Token',respData.token);",
 							""
