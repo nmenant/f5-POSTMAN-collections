@@ -1,0 +1,33 @@
+{
+	"name":"Wrapper_App_Deployment",
+	"description":"Execute a chained workflow that authenticates to an iWorkflow device as a Tenant and deploy an application. This should be used with the subscription workflow and the REST worker to setup DNS accordingly",
+	"globalEnvVars":"./iWF-Service-Catalog.postman_environment",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"bigip_mgmt": "192.168.143.25",
+		"bigip_username":"Nicolas",
+		"bigip_password":"cnicolas"
+	},
+	"saveEnvVars":true,
+	"outputFile":"/tmp/Wrapper_App_Deployment-run.json",
+	"envOutputFile":"/tmp/Wrapper_App_Deployment-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to iWorkflow as a Tenant Admin",
+			"options": {
+				"collection":"./iWF_API_Authentication.postman_collection"
+			}
+		},
+		{
+			"name":"Push an Application in the Tenant",
+			"skip":false,
+			"options": {
+				"collection":"./iWF-Service-Catalog.postman_collection",
+				"folder":"Deploy-Service"
+			}
+		}
+	]
+}
