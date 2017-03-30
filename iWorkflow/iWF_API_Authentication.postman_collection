@@ -26,7 +26,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authn/login",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/authn/login",
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -55,7 +55,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
 				"method": "PATCH",
 				"header": [
 					{

@@ -8,13 +8,13 @@
 	},
 	"item": [
 		{
-			"name": "Delete service",
+			"name": "Delete-Service",
 			"description": "",
 			"item": [
 				{
 					"name": "Delete Service App",
 					"request": {
-						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
 						"method": "DELETE",
 						"header": [
 							{
@@ -39,7 +39,7 @@
 			]
 		},
 		{
-			"name": "Deploy Service catalog",
+			"name": "Deploy-Service",
 			"description": "",
 			"item": [
 				{
@@ -61,7 +61,7 @@
 						}
 					],
 					"request": {
-						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp",
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp",
 						"method": "POST",
 						"header": [
 							{
@@ -86,7 +86,7 @@
 				{
 					"name": "Check App deployment",
 					"request": {
-						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
 						"method": "GET",
 						"header": [
 							{
@@ -114,7 +114,7 @@
 				{
 					"name": "Change VS IP ",
 					"request": {
-						"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/cm/cloud/tenants/{{tenant-name}}/services/iapp/{{service-name}}",
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
 						"method": "PUT",
 						"header": [
 							{

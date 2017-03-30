@@ -37,7 +37,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/build-package",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/build-package",
 				"method": "POST",
 				"header": [
 					{
@@ -62,7 +62,7 @@
 		{
 			"name": "Check RPM creation process",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/build-package/{{rpm-creation-status-id}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/build-package/{{rpm-creation-status-id}}",
 				"method": "GET",
 				"header": [
 					{
@@ -100,7 +100,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/package-management-tasks",
 				"method": "POST",
 				"header": [
 					{
@@ -125,7 +125,7 @@
 		{
 			"name": "Check RPM installation process status",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks/{{rpm-installation-status-id}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/package-management-tasks/{{rpm-installation-status-id}}",
 				"method": "GET",
 				"header": [
 					{
@@ -147,7 +147,7 @@
 		{
 			"name": "Check installed RPM",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/global-installed-packages",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/global-installed-packages",
 				"method": "GET",
 				"header": [
 					{
@@ -172,7 +172,7 @@
 		{
 			"name": "Check block iapps",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/blocks",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/blocks",
 				"method": "GET",
 				"header": [
 					{
@@ -213,7 +213,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks",
+				"url": "https://{{iwf_mgmt}}mgmt/shared/iapp/package-management-tasks",
 				"method": "POST",
 				"header": [
 					{
@@ -238,7 +238,7 @@
 		{
 			"name": "Check uninstall rpm process status",
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/shared/iapp/package-management-tasks/{{rpm-uninstallation-status-id}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/iapp/package-management-tasks/{{rpm-uninstallation-status-id}}",
 				"method": "GET",
 				"header": [
 					{

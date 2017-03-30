@@ -26,7 +26,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions",
+				"url": "https://{{iwf_mgmt}}/mgmt/subscriptions",
 				"method": "POST",
 				"header": [
 					{
@@ -62,7 +62,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions/{{Subscription_Token}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/subscriptions/{{Subscription_Token}}",
 				"method": "GET",
 				"header": [
 					{
@@ -95,7 +95,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}//mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/subscriptions",
+				"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/subscriptions",
 				"method": "GET",
 				"header": [
 					{
