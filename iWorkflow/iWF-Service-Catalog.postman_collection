@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "iWF Service catalog",
+		"name": "iWF-Service-Catalog",
 		"_postman_id": "c7ce73f3-7e44-4d80-e41e-b6f061c90cb7",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"

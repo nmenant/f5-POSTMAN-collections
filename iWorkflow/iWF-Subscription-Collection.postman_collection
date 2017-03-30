@@ -95,7 +95,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iWorkflow_Mgmt_IP}}/mgmt/subscriptions/{{Subscription_Token}}",
+				"url": "https://{{iWorkflow_Mgmt_IP}}//mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/subscriptions",
 				"method": "GET",
 				"header": [
 					{

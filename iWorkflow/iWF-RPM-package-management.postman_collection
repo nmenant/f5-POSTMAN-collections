@@ -1,7 +1,7 @@
 {
 	"variables": [],
 	"info": {
-		"name": "iWF RPM package management",
+		"name": "iWF-RPM-package-management",
 		"_postman_id": "5e16e484-d222-8313-ec95-718be987f887",
 		"description": "Collection to create/install/delete a RPM in iWF",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
