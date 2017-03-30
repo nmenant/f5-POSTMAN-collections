@@ -7,9 +7,10 @@
 		"reporters":["cli"]
 	},
 	"globalVars": {
-		"bigip_mgmt": "192.168.143.25",
-		"bigip_username":"Nicolas",
-		"bigip_password":"cnicolas"
+		"iwf_mgmt": "192.168.143.30",
+		"iwf_username":"Nicolas",
+		"iwf_password":"cnicolas",
+		"iwf_tenant_name":"Tenant_Nicolas"
 	},
 	"saveEnvVars":true,
 	"outputFile":"/tmp/Wrapper_App_Deployment-run.json",

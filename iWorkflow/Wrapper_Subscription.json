@@ -7,9 +7,9 @@
 		"reporters":["cli"]
 	},
 	"globalVars": {
-		"bigip_mgmt": "192.168.143.25",
-		"bigip_username":"admin",
-		"bigip_password":"admin"
+		"iwf_mgmt": "192.168.143.30",
+		"iwf_username":"admin",
+		"iwf_password":"admin"
 	},
 	"saveEnvVars":true,
 	"outputFile":"/tmp/Wrapper_Set_Subscription-run.json",
