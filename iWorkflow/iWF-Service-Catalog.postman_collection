@@ -57,6 +57,8 @@
 								"exec": [
 									"tests[\"Status code is: \" + responseCode.code] = responseCode.code === 404;",
 									"",
+									"console.log(environment.retryCounter);",
+									"",
 									"if (! (environment.retryCounter)) {",
 									"    var isNewman = 1;",
 									"    var retryCounter = postman.getGlobalVariable(\"retryCounter\");",
