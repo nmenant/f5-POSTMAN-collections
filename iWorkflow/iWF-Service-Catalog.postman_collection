@@ -61,6 +61,8 @@
 									"var retryLimit = postman.getEnvironmentVariable('retry-limit');",
 									"var retryInterval = postman.getEnvironmentVariable('retry-interval');",
 									"",
+									"console.log(postman.getEnvironmentVariable('retry-counter'));",
+									"",
 									"function pausecomp(millis)",
 									"{",
 									"    var date = new Date();",
