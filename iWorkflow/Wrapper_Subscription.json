@@ -1,12 +1,13 @@
 {
 	"name":"Wrapper_Set_Subscription",
 	"description":"Execute a chained workflow that authenticates to an iWorkflow device and set a subscription based on a topic and a REST Worker",
-	"globalEnvVars":"./iWF-Subscription-Collection.postman_environment",
 	"globalOptions": {
 		"insecure":true,
 		"reporters":["cli"]
 	},
 	"globalVars": {
+		"subscription_topic": "/mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/",
+		"subscriber":"http://localhost:8105/shared/ipam-dns-placement-handler",
 		"iwf_mgmt": "192.168.143.30",
 		"iwf_username":"admin",
 		"iwf_password":"admin"

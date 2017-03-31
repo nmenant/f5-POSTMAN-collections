@@ -7,6 +7,11 @@
 		"reporters":["cli"]
 	},
 	"globalVars": {
+		"Service-template-name": "LTM-config-app-services",
+                "service-name": "my-app-test-rest-worker",
+                "svc-catalog-template":"LTM-config-app-services",
+                "big-ip-connector":"local/c3d5edf0-81c9-41b6-aa24-96b8b20624d0",
+                "service-selflink":"https://localhost/mgmt/cm/cloud/tenants/Tenant_Nicolas/services/iapp/my-app-test-rest-worker",
 		"iwf_mgmt": "192.168.143.30",
 		"iwf_username":"Nicolas",
 		"iwf_password":"cnicolas",
