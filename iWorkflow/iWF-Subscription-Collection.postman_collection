@@ -93,7 +93,7 @@
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
-							"tests[environment.subscription_topic + \"contains our subscriber\"] = responseBody.has(environment.subscriber);",
+							"tests[environment.subscription_topic + \" contains our subscriber\"] = responseBody.has(environment.subscriber);",
 							"",
 							""
 						]
