@@ -1,6 +1,6 @@
 {
 	"name":"Wrapper_App_Deployment",
-	"description":"Execute a chained workflow that authenticates to an iWorkflow device as a Tenant and delete an application. This should be used with the subscription workflow and the REST worker to setup DNS accordingly",
+	"description":"Execute a chained workflow that authenticates to an iWorkflow device as a Tenant and deploy an application. This should be used with the subscription workflow and the REST worker to setup DNS accordingly",
 	"globalEnvVars":"./iWF-Service-Catalog.postman_environment",
 	"globalOptions": {
 		"insecure":true,
@@ -13,8 +13,8 @@
 		"iwf_tenant_name":"Tenant_Nicolas"
 	},
 	"saveEnvVars":true,
-	"outputFile":"/tmp/Wrapper_App_Delete-run.json",
-	"envOutputFile":"/tmp/Wrapper_App_Delete-env.json",
+	"outputFile":"/tmp/Wrapper_App_Deployment-run.json",
+	"envOutputFile":"/tmp/Wrapper_App_Deployment-env.json",
 	"workflow": [
 		{
 			"name":"Authenticate to iWorkflow as a Tenant Admin",
@@ -23,11 +23,11 @@
 			}
 		},
 		{
-			"name":"Delete an Application in the Tenant",
+			"name":"Push an Application in the Tenant",
 			"skip":false,
 			"options": {
 				"collection":"./iWF-Service-Catalog.postman_collection",
-				"folder":"Deploy-Service"
+				"folder":"Delete-Service"
 			}
 		}
 	]
