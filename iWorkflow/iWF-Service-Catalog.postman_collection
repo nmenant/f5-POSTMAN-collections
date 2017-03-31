@@ -66,6 +66,7 @@
 									"}",
 									"",
 									"if (responseCode.code === 200) {",
+									"     tests[\"retry-counter value is: \" + environment['retry-counter']] = environment['retry-counter'];",
 									"    if ( parseInt(environment['retry-counter']) < parseInt(environment['retry-limit']))",
 									"    {",
 									"        tests[\"retry-counter value is: \" + environment['retry-counter']] = environment['retry-counter'];",
