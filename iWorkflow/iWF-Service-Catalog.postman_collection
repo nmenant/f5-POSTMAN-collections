@@ -68,6 +68,7 @@
 									"if (responseCode.code === 200) {",
 									"    if ( parseInt(environment['retry-counter']) < parseInt(environment['retry-limit']))",
 									"    {",
+									"        tests[\"retry-counter value is: \" + environment['retry-counter']] = environment['retry-counter'];",
 									"        postman.setEnvironmentVariable('retry-counter', parseInt(environment['retry-counter']) + 1);",
 									"        pausecomp(environment['retry-interval']);",
 									"        postman.setNextRequest(\"Check App has been deleted\");",
