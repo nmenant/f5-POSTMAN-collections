@@ -57,9 +57,9 @@
 								"exec": [
 									"tests[\"Status code is: \" + responseCode.code] = responseCode.code === 404;",
 									"",
-									"var retryCounter = postman.getEnvironmentVariable('retry_counter');",
-									"var retryLimit = postman.getEnvironmentVariable('retry_limit');",
-									"var retryInterval = postman.getEnvironmentVariable('retry_interval');",
+									"var retryCounter = postman.getEnvironmentVariable('retryCounter');",
+									"var retryLimit = postman.getEnvironmentVariable('retryLimit');",
+									"var retryInterval = postman.getEnvironmentVariable('retryInterval');",
 									"",
 									"console.log(postman.getEnvironmentVariable('retry_counter'));",
 									"",
