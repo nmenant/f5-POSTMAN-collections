@@ -77,9 +77,7 @@
 									"        console.log(\"Resetting, retry counter to 0\");",
 									"        tests[\"Retries Expired\"] = true === false;",
 									"}",
-									"} else {",
-									"    tests[\"Status code is 404\"] = responseCode.code === 404;",
-									"} ",
+									"}",
 									"",
 									"",
 									""
