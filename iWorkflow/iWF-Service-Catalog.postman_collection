@@ -13,6 +13,17 @@
 			"item": [
 				{
 					"name": "Delete Service App",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
 						"method": "DELETE",
@@ -52,7 +63,11 @@
 								"exec": [
 									"var respData = JSON.parse(responseBody);",
 									"",
-									"tests[\"response has token: \" +respData.selfLink] = respData.selfLink;",
+									"tests[\"response has app name: \" + respData.name] = respData.name;",
+									"",
+									"tests[\"tenantTemplateReference: \" + respData.tenantTemplateReference.link] = respData.tenantTemplateReference.link;",
+									"",
+									"tests[\"response has token: \" + respData.selfLink] = respData.selfLink;",
 									"",
 									"postman.setEnvironmentVariable('service-selflink',respData.selfLink);",
 									""
@@ -85,6 +100,17 @@
 				},
 				{
 					"name": "Check App deployment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
 					"request": {
 						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
 						"method": "GET",
