@@ -58,7 +58,16 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"our subscription details - token: \" + respData.token] = respData.token;",
+							"",
+							"tests[\"our subscription details - topic: \" + respData.topic] = respData.topic;",
+							"",
+							"tests[\"our subscription details - subscriber: \" + respData.subscriber] = respData.subscriber;",
+							""
 						]
 					}
 				}
@@ -93,7 +102,9 @@
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
-							"tests[\"check our subscription topic contains our subscriber\"] = responseBody.has(environment.subscriber);",
+							"var respData = JSON.parse(responseBody);",
+							"",
+							"tests[\"response has the following subscribers: \" + respData.subscribers] = respData.subscribers;",
 							"",
 							""
 						]
