@@ -93,9 +93,7 @@
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
-							"var sub_topic = environment.subscription_topic;",
-							"",
-							"tests[sub_topic + \" contains our subscriber\"] = responseBody.has(environment.subscriber);",
+							"tests[\"check our subscription topic contains our subscriber\"] = responseBody.has(environment.subscriber);",
 							"",
 							""
 						]
