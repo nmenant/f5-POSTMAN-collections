@@ -35,7 +35,7 @@
 			"skip":false,
 			"options": {
 				"collection":"./iWF-Service-Catalog.postman_collection",
-				"folder":"Delete-Service"
+				"folder":"3_Delete-Service"
 			}
 		}
 	]

@@ -26,7 +26,8 @@
 			"name":"Set a subscription",
 			"skip":false,
 			"options": {
-				"collection":"./iWF-Subscription-Collection.postman_collection"
+				"collection":"./iWF-Subscription-Collection.postman_collection",
+				"folder": "1A_Create_Subscription"	
 			}
 		}
 	]

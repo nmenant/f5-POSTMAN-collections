@@ -55,7 +55,7 @@
 				}
 			],
 			"request": {
-				"url": "https://{{iwf_mgmt}}/mgmt/shared/authz/tokens/{{iWorkflow1_Auth_Token}}",
+				"url": "https://{{iwf_mgmt}}/mgmt/shared/authz/tokens/{{iwf_token}}",
 				"method": "PATCH",
 				"header": [
 					{

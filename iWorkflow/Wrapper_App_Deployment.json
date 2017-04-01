@@ -27,11 +27,11 @@
 			}
 		},
 		{
-			"name":"Delete an Application in the Tenant",
+			"name":"Create an Application in the Tenant",
 			"skip":false,
 			"options": {
 				"collection":"./iWF-Service-Catalog.postman_collection",
-				"folder":"Deploy-Service"
+				"folder":"1_Deploy-Service"
 			}
 		}
 	]
