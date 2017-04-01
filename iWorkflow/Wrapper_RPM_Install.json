@@ -1,0 +1,37 @@
+{
+        "name":"Wrapper_RPM_Install",
+        "description":"Execute a chained workflow that authenticates to an iWorkflow device and install a REST Worker RPM in /var/config/rest/iapps/ - the RPM must be set in /var/config/rest/downloads",
+        "globalOptions": {
+                "insecure":true,
+                "reporters":["cli"]
+        },
+        "globalVars": {
+                "iwf_mgmt": "192.168.143.30",
+                "iwf_username": "admin",
+                "iwf_password": "admin",
+		"rpm_name": {},
+		"retryCounter": "0",
+		"retryLimit": "5",
+		"retryInterval": "2000"
+        },
+	"globalVarsIncludeFile": "Wrapper_RPM_Create-env.json",
+        "saveEnvVars":true,
+        "outputFile":"Wrapper_RPM_Install-run.json",
+        "envOutputFile":"Wrapper_RPM_Install-env.json",
+        "workflow": [
+                {
+                        "name":"Authenticate to iWorkflow as a Tenant Admin",
+                        "options": {
+                                "collection":"./iWF_API_Authentication.postman_collection"
+                        }
+                },
+                {
+                        "name":"Install the REST Worker RPM",
+                        "skip":false,
+                        "options": {
+                                "collection":"./iWF-RPM-package-management.postman_collection",
+                                "folder":"2A_Install RPM"
+                        }
+                }
+        ]
+}

@@ -1,0 +1,36 @@
+{
+        "name":"Wrapper_RPM_Create",
+        "description":"Execute a chained workflow that authenticates to an iWorkflow device and create a REST Worker RPM out of a directory located in /var/config/rest/iapps/",
+        "globalOptions": {
+                "insecure":true,
+                "reporters":["cli"]
+        },
+        "globalVars": {
+                "iwf_mgmt": "192.168.143.30",
+                "iwf_username": "admin",
+                "iwf_password": "admin",
+		"app_name": "ipam-dns-placement-handler",
+		"retryCounter": "0",
+		"retryLimit": "5",
+		"retryInterval": "2000"
+        },
+        "saveEnvVars":true,
+        "outputFile":"Wrapper_RPM_Create-run.json",
+        "envOutputFile":"Wrapper_RPM_Create-env.json",
+        "workflow": [
+                {
+                        "name":"Authenticate to iWorkflow as a Tenant Admin",
+                        "options": {
+                                "collection":"./iWF_API_Authentication.postman_collection"
+                        }
+                },
+                {
+                        "name":"Create a REST Worker RPM",
+                        "skip":false,
+                        "options": {
+                                "collection":"./iWF-RPM-package-management.postman_collection",
+                                "folder":"1A_Create RPM"
+                        }
+                }
+        ]
+}
