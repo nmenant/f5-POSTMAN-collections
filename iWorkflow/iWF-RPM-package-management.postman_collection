@@ -9,7 +9,7 @@
 	"item": [
 		{
 			"name": "1A_Create_RPM",
-			"description": "Create a RPM from a REST Worker repo. \nThe folder containing the worker must be in /var/config/rest/iapps/\n\nthe folder name in /var/config/rest/iapps/ storing the worker must be used as the app_name\n\nthe RPM created will be here: /var/config/rest/iapps/RPMS/\n\nYou MUST MOVE IT MANUALLY HERE to install it: /var/config/rest/downloads/. If you don't move it, you'll get the following security exception\n\nFailed to install /var/config/rest/iapps/RPMS/********** - java.lang.SecurityException: Cannot install RPM from /var/config/rest/iapps/RPMS directory. Only install RPM from /var/config/rest/downloads directory\n\nInput Variables:\napp_name\t\t\t\tname of the RPM to create\niwf_mgmt\t\t\t\tiWorkflow management address\niWorkflow1_Auth_Token\tiWF Auth Token\nretryCounter\t\t\t\tCounter\nretryLimit\t\t\t\t\tMax value of counter\nretryInterval\t\t\t\tInterval between tests in ms\n\nOutput Variables\nrpm_creation_status_id\tID to track RPM creation status\nrpm_name\t\t\t\tname of the RPM created",
+			"description": "Create a RPM from a REST Worker repo. \nThe folder containing the worker must be in /var/config/rest/iapps/\n\nthe folder name in /var/config/rest/iapps/ storing the worker must be used as the app_name\n\nthe RPM created will be here: /var/config/rest/iapps/RPMS/\n\nYou MUST MOVE IT MANUALLY HERE to install it: /var/config/rest/downloads/. If you don't move it, you'll get the following security exception\n\nFailed to install /var/config/rest/iapps/RPMS/********** - java.lang.SecurityException: Cannot install RPM from /var/config/rest/iapps/RPMS directory. Only install RPM from /var/config/rest/downloads directory\n\nInput Variables:\napp_name\t\t\t\tname of the RPM to create\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_token\t\t\t\tiwf Auth token\nretryCounter\t\t\tCounter\nretryLimit\t\t\t\tMax value of counter\nretryInterval\t\t\tInterval between tests in ms\n\nOutput Variables\nrpm_creation_status_id\tID to track RPM creation status\nrpm_name\t\t\t\tname of the RPM created",
 			"item": [
 				{
 					"name": "Create RPM on iWF",
@@ -132,7 +132,7 @@
 		},
 		{
 			"name": "2A_Install_RPM",
-			"description": "Install the RPM located in /var/config/rest/downloads/ and will install it. \n\nthe content of the RPM will be installed in /var/config/rest/iapps/ and will overwrite being already there if conflict\n\nInput Variables:\niwf_mgmt\t\t\t\t\tiWorkflow management address\niWorkflow1_Auth_Token\t\tiWF Auth Token\nrpm_name\t\t\t\t\tname of the RPM to install\nretryCounter\t\t\t\tCounter\nretryLimit\t\t\t\t\tMax value of counter\nretryInterval\t\t\t\tInterval between tests in ms\n\nOutput Variables\nrpm_installation_status_id\tID to track install progress",
+			"description": "Install the RPM located in /var/config/rest/downloads/ and will install it. \n\nthe content of the RPM will be installed in /var/config/rest/iapps/ and will overwrite being already there if conflict\n\nInput Variables:\niwf_mgmt\t\t\t\t\tiWorkflow management address\niwf_token\t\t\t\t\tiwf Auth token\nrpm_name\t\t\t\t\tname of the RPM to install\nretryCounter\t\t\t\tCounter\nretryLimit\t\t\t\t\tMax value of counter\nretryInterval\t\t\t\tInterval between tests in ms\n\nOutput Variables\nrpm_installation_status_id\tID to track install progress",
 			"item": [
 				{
 					"name": "install RPM",
@@ -292,7 +292,7 @@
 		},
 		{
 			"name": "3A_Delete_RPM",
-			"description": "Delete REST worker that was installed in /var/config/rest/iapps.\n\nInput Variables:\niwf_mgmt\t\t\t\t\tiWorkflow management address\niWorkflow1_Auth_Token\t\tiWF Auth Token\nrpm_name\t\t\t\t\tname of the RPM to install\n\nOutput Variables\nrpm_uninstallation_status_id\tID to track delete progress",
+			"description": "Delete REST worker that was installed in /var/config/rest/iapps.\n\nInput Variables:\niwf_mgmt\t\t\t\t\tiWorkflow management address\niwf_token\t\t\t\tiwf Auth token\nrpm_name\t\t\t\t\tname of the RPM to install\n\nOutput Variables\nrpm_uninstallation_status_id\tID to track delete progress",
 			"item": [
 				{
 					"name": "Uninstall RPM",

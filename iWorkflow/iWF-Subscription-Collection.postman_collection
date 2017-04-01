@@ -8,128 +8,174 @@
 	},
 	"item": [
 		{
-			"name": "create subscription",
-			"event": [
+			"name": "1A_Create_Subscription",
+			"description": "Add a subscription on iWorkflow.\n\nInput Variables:\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_token\t\t\t\tiwf Auth token\nsubscription_topic\t\turi to subscribe\nsubscriber\t\t\t\tthe REST Worker subscribing\n\nOutput Variables\nSubscription_Token\t\tSubscription ID",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var respData = JSON.parse(responseBody);",
-							"",
-							"tests[\"response has token: \" +respData.token] = respData.token;",
-							"",
-							"postman.setEnvironmentVariable('Subscription_Token',respData.token);",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "https://{{iwf_mgmt}}/mgmt/subscriptions",
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iwf_token}}",
-						"description": ""
+					"name": "create subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"response has token: \" +respData.token] = respData.token;",
+									"",
+									"postman.setEnvironmentVariable('Subscription_Token',respData.token);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/subscriptions",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iwf_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\"topic\" : \"{{subscription_topic}}\",\r\"subscriber\": \"{{subscriber}}\"\r}"
+						},
+						"description": "create a subscription to monitor the deployment of an iApp. if it happens, the subscription will trigger our handler"
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\"topic\" : \"{{subscription_topic}}\",\r\"subscriber\": \"{{subscriber}}\"\r}"
+					"response": []
 				},
-				"description": "create a subscription to monitor the deployment of an iApp. if it happens, the subscription will trigger our handler"
-			},
-			"response": []
-		},
-		{
-			"name": "Check subscription",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var respData = JSON.parse(responseBody);",
-							"",
-							"tests[\"our subscription details - token: \" + respData.token] = respData.token;",
-							"",
-							"tests[\"our subscription details - topic: \" + respData.topic] = respData.topic;",
-							"",
-							"tests[\"our subscription details - subscriber: \" + respData.subscriber] = respData.subscriber;",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "https://{{iwf_mgmt}}/mgmt/subscriptions/{{Subscription_Token}}",
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iwf_token}}",
+					"name": "Check subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"our subscription details - token: \" + respData.token] = respData.token;",
+									"",
+									"tests[\"our subscription details - topic: \" + respData.topic] = respData.topic;",
+									"",
+									"tests[\"our subscription details - subscriber: \" + respData.subscriber] = respData.subscriber;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/subscriptions/{{Subscription_Token}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iwf_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "Check subscription on the relevant uri",
-			"event": [
+					"response": []
+				},
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var respData = JSON.parse(responseBody);",
-							"",
-							"tests[\"response has the following subscribers: \" + respData.subscribers] = respData.subscribers;",
-							"",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "https://{{iwf_mgmt}}/{{subscription_topic}}/subscriptions",
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-F5-Auth-Token",
-						"value": "{{iwf_token}}",
+					"name": "Check subscription on the relevant uri",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"response has the following subscribers: \" + respData.subscribers] = respData.subscribers;",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/{{subscription_topic}}/subscriptions",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iwf_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2B_Delete_Subscription",
+			"description": "Delete subscription from iWorkflow.\n\nInput Variables:\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_token\t\t\t\tiwf Auth token\nSubscription_Token\t\tSubscription ID \n",
+			"item": [
+				{
+					"name": "Delete subscription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/subscriptions/{{Subscription_Token}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iwf_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
 						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
