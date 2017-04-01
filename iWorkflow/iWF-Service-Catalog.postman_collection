@@ -39,7 +39,7 @@
 						"header": [
 							{
 								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
+								"value": "{{iwf_token}}",
 								"description": ""
 							},
 							{
@@ -75,7 +75,7 @@
 						"header": [
 							{
 								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
+								"value": "{{iwf_token}}",
 								"description": ""
 							},
 							{
@@ -103,7 +103,7 @@
 						"header": [
 							{
 								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
+								"value": "{{iwf_token}}",
 								"description": ""
 							},
 							{
@@ -145,7 +145,7 @@
 						"header": [
 							{
 								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
+								"value": "{{iwf_token}}",
 								"description": ""
 							},
 							{
@@ -212,7 +212,7 @@
 						"header": [
 							{
 								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
+								"value": "{{iwf_token}}",
 								"description": ""
 							},
 							{

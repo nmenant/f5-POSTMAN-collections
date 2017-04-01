@@ -19,7 +19,7 @@
 							"",
 							"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
 							"",
-							"postman.setEnvironmentVariable('iWorkflow1_Auth_Token',respData.token.token);",
+							"postman.setEnvironmentVariable('iwf_token',respData.token.token);",
 							""
 						]
 					}
@@ -60,7 +60,7 @@
 				"header": [
 					{
 						"key": "X-F5-Auth-Token",
-						"value": "{{iWorkflow1_Auth_Token}}",
+						"value": "{{iwf_token}}",
 						"description": ""
 					},
 					{
