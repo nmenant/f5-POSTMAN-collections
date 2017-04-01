@@ -8,8 +8,123 @@
 	},
 	"item": [
 		{
-			"name": "Delete-Service",
-			"description": "",
+			"name": "1_Deploy-Service",
+			"description": "Manipulate a service catalog item (Update)\n\nInput Variables:\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_tenant_name\t\t\tiWF Tenant name\niWorkflow1_Auth_Token\tiWF Auth Token\nservice-name\t\t\tName of the service to deploy\nsvc-catalog-template\tName of the service template\nbig-ip-connector\t\tBIG-IP Connector to leverage\nretryLimit\t\t\t\tMax retries to delete the service\nretryCounter\t\t\tRetry counter\nretryInterval\t\t\tRetry interval in ms\n\nOutput Variables\nservice-selflink\t\tLocalhost link to deployed service",
+			"item": [
+				{
+					"name": "Deploy Service catalog template",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"response has app name: \" + respData.name] = respData.name;",
+									"",
+									"tests[\"tenantTemplateReference: \" + respData.tenantTemplateReference.link] = respData.tenantTemplateReference.link;",
+									"",
+									"tests[\"response has token: \" + respData.selfLink] = respData.selfLink;",
+									"",
+									"postman.setEnvironmentVariable('service-selflink',respData.selfLink);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/{{svc-catalog-template}}\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__port\",\r\n          \"value\": \"80\"\r\n        },\r\n        {\r\n          \"name\": \"wideip__name\",\r\n          \"value\": \"www.{{service-name}}.com\"\r\n        }\r\n      ],\r\n      \"tables\": [\r\n        {\r\n          \"name\": \"monitor__Monitors\",\r\n          \"columns\": [\r\n            \"Index\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"0\",\r\n              \"/Common/tcp\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Pools\",\r\n          \"columns\": [\r\n            \"LbMethod\",\r\n            \"Monitor\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"round-robin\",\r\n              \"0;1\",\r\n              \"my-rest-pool\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Members\",\r\n          \"columns\": [\r\n            \"IPAddress\",\r\n            \"Port\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"172.16.2.200\",\r\n              \"80\"\r\n            ]\r\n          ]\r\n        }\r\n      ],\r\n      \"properties\": [\r\n        {\r\n          \"id\": \"cloudConnectorReference\",\r\n          \"value\": \"https://localhost/mgmt/cm/cloud/connectors/{{big-ip-connector}}\"\r\n        }\r\n      ]\r\n    }\r\n\r\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Check App deployment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2_Update Service",
+			"description": "Manipulate a service catalog item (Update)\n\nInput Variables:\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_tenant_name\t\t\tiWF Tenant name\niWorkflow1_Auth_Token\tiWF Auth Token\nservice-name\t\t\tName of the service to update\nsvc-catalog-template\tName of the service template\nservice-selflink\t\tLocalhost link to deployed service",
+			"item": [
+				{
+					"name": "Change VS IP ",
+					"request": {
+						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{iWorkflow1_Auth_Token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/{{svc-catalog-template}}\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__addr\",\r\n          \"value\": \"172.16.1.83\"\r\n        }\r\n      ],\r\n      \"selfLink\": \"{{service-selflink}}\"\r\n    }\r\n\r\n"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3_Delete-Service",
+			"description": "Manipulate a service catalog item (Delete)\n\nInput Variables:\niwf_mgmt\t\t\t\tiWorkflow management address\niwf_tenant_name\t\t\tiWorkflow Tenant where App is\niWorkflow1_Auth_Token\tiWF Auth Token\nservice-name\t\t\tName of the service to deploy\nsvc-catalog-template\tName of the iWF template used\nretryLimit\t\t\t\tMax retries to delete the service\nretryCounter\t\t\tRetry counter\nretryInterval\t\t\tRetry interval in ms\n\n\n",
 			"item": [
 				{
 					"name": "Delete Service App",
@@ -107,121 +222,6 @@
 							}
 						],
 						"body": {},
-						"description": ""
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Deploy-Service",
-			"description": "",
-			"item": [
-				{
-					"name": "Deploy Service catalog template",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var respData = JSON.parse(responseBody);",
-									"",
-									"tests[\"response has app name: \" + respData.name] = respData.name;",
-									"",
-									"tests[\"tenantTemplateReference: \" + respData.tenantTemplateReference.link] = respData.tenantTemplateReference.link;",
-									"",
-									"tests[\"response has token: \" + respData.selfLink] = respData.selfLink;",
-									"",
-									"postman.setEnvironmentVariable('service-selflink',respData.selfLink);",
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp",
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/{{svc-catalog-template}}\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__port\",\r\n          \"value\": \"80\"\r\n        },\r\n        {\r\n          \"name\": \"wideip__name\",\r\n          \"value\": \"www.{{service-name}}.com\"\r\n        }\r\n      ],\r\n      \"tables\": [\r\n        {\r\n          \"name\": \"monitor__Monitors\",\r\n          \"columns\": [\r\n            \"Index\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"0\",\r\n              \"/Common/tcp\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Pools\",\r\n          \"columns\": [\r\n            \"LbMethod\",\r\n            \"Monitor\",\r\n            \"Name\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"round-robin\",\r\n              \"0;1\",\r\n              \"my-rest-pool\"\r\n            ]\r\n          ]\r\n        },\r\n        {\r\n          \"name\": \"pool__Members\",\r\n          \"columns\": [\r\n            \"IPAddress\",\r\n            \"Port\"\r\n          ],\r\n          \"rows\": [\r\n            [\r\n              \"172.16.2.200\",\r\n              \"80\"\r\n            ]\r\n          ]\r\n        }\r\n      ],\r\n      \"properties\": [\r\n        {\r\n          \"id\": \"cloudConnectorReference\",\r\n          \"value\": \"https://localhost/mgmt/cm/cloud/connectors/{{big-ip-connector}}\"\r\n        }\r\n      ]\r\n    }\r\n\r\n"
-						},
-						"description": ""
-					},
-					"response": []
-				},
-				{
-					"name": "Check App deployment",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": ""
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Update Service",
-			"description": "",
-			"item": [
-				{
-					"name": "Change VS IP ",
-					"request": {
-						"url": "https://{{iwf_mgmt}}/mgmt/cm/cloud/tenants/{{iwf_tenant_name}}/services/iapp/{{service-name}}",
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-F5-Auth-Token",
-								"value": "{{iWorkflow1_Auth_Token}}",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n      \"name\": \"{{service-name}}\",\r\n      \"tenantTemplateReference\": {\r\n        \"link\": \"https://localhost/mgmt/cm/cloud/tenant/templates/iapp/LTM-config-app-services\"\r\n      },\r\n      \"vars\": [\r\n        {\r\n          \"name\": \"pool__addr\",\r\n          \"value\": \"172.16.1.83\"\r\n        }\r\n      ],\r\n      \"selfLink\": \"{{service-selflink}}\"\r\n    }\r\n\r\n"
-						},
 						"description": ""
 					},
 					"response": []
