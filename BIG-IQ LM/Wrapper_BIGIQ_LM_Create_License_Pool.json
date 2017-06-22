@@ -1,0 +1,35 @@
+{
+	"name":"Wrapper_BIGIQ_LM_Create_License_Pool",
+	"description":"Execute a chained workflow that creates a license pool and add a RegKey to it on BIG-IQ license Manager",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"bigiq_username":"admin",
+		"bigiq_password":"admin",
+		"bigiq_mgmt":"192.168.143.31",
+		"bigiq-license-pool-name":"my-license-pool",
+		"bigip-regkey":"LAQCO-DQDAJ-QUURY-VSWKZ-NWAKJOS"
+	},
+	"saveEnvVars":true,
+	"outputFile":"/tmp/Wrapper_BIGIQ_LM_Create_License_Pool-run.json",
+	"envOutputFile":"/tmp/Wrapper_BIGIQ_LM_Create_License_Pool-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to BIG-IQ LM",
+			"options": {
+				"collection":"./BIGIQ_License_Manager.postman_collection",
+				"folder":"1_Auth"
+			}
+		},
+		{
+			"name":"Create a License Pool and add a RegKey",
+			"skip":false,
+			"options": {
+				"collection":"/BIGIQ_License_Manager.postman_collection",
+				"folder":"2_Create_License_Pool"
+			}
+		}
+	]
+}

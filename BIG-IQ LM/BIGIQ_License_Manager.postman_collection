@@ -1,0 +1,625 @@
+{
+	"variables": [],
+	"info": {
+		"name": "BIGIQ_License_Manager",
+		"_postman_id": "935593bb-1a32-aede-b197-c9f3e30bde0c",
+		"description": "Collection that will show you how to use BIG-IQ License Manager with BIG-IP in UNManaged mode. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1_Auth",
+			"description": "",
+			"item": [
+				{
+					"name": "Request a Token from BIG-IQ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"response has token: \" +respData.token.token] = respData.token.token;",
+									"",
+									"postman.setEnvironmentVariable('bigiq_token',respData.token.token);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/shared/authn/login",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": {{bigiq_username}},\n  \"password\": {{bigiq_password}},\n  \"loginProvidername\": \"tmos\"\n}"
+						},
+						"description": "Using Basic Auth, request a token from the BIG-IQ platform.\n\nNeeds the following variables:\nbigiq_mgmt: IP Address of BIG-IQ LM\nbigiq_username: login \nbigiq_password: password"
+					},
+					"response": []
+				},
+				{
+					"name": "Increase Auth Token Timeout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"tests[\"Auth Token timeout is: \" +respData.timeout] = respData.timeout;",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/shared/authz/tokens/{{bigiq_token}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"timeout\":\"36000\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2_Create_License_Pool",
+			"description": "",
+			"item": [
+				{
+					"name": "Create_License_Pool",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"License pool has ID: \" +respData.id] = respData.id;",
+									"",
+									"postman.setEnvironmentVariable('license-pool-id',respData.id);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"name\" : \"{{bigiq-license-pool-name}}\"\n}"
+						},
+						"description": "Create the license pool where we will store our regkey. \n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM\nbigiq-license-pool-name : Name of the license pool \n"
+					},
+					"response": []
+				},
+				{
+					"name": "Create_License_Pool_Add_Regkey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"regKey\": \"{{bigip-regkey}}\",\n  \"name\": \"my own freeform name\",\n  \"status\": \"ACTIVATING_AUTOMATIC\"\n}\n"
+						},
+						"description": "Will add a RegKey to the previously created license pool\n\nvariables:\nbigiq_mgmt: IP Address of BIG-IQ LM\nbigip-regkey: BIG-IP Registration key (regkey) to add to our license pool"
+					},
+					"response": []
+				},
+				{
+					"name": "Create_License_Pool_Add_Regkey_Get_EULA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"status is : \" + respData.status] = respData.status;",
+									"",
+									"tests[\"EULA is : \" + respData.eulaText] = respData.eulaText;",
+									"",
+									"var string = JSON.stringify(respData.eulaText);",
+									"var ret = string.replace(/\\\\n/g, \"\\\\n\")",
+									"                 .replace(/\\\\'/g, \"\\\\'\")",
+									"                 .replace(/\\\\\"/g, '\\\\\"')",
+									"                 .replace(/\\\\&/g, \"\\\\&\")",
+									"                 .replace(/\\\\r/g, \"\\\\r\")",
+									"                 .replace(/\\\\t/g, \"\\\\t\")",
+									"                 .replace(/\\\\b/g, \"\\\\b\")",
+									"                 .replace(/\\\\f/g, \"\\\\f\")",
+									"                 .replace(/^\\\"/g, \"\")",
+									"                 .replace(/\\\"$/g, \"\");",
+									"",
+									"postman.setEnvironmentVariable('eula-text', ret);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "After pushing a regkey, we need to retrieve the EULA provided by BIG-IQ LM to accept it. We retrieve it and store it in a variable to push it back to BIG-IQ LM. That's how we validate the EULA\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				},
+				{
+					"name": "Create_License_Pool_Add_Regkey_Accept_EULA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"status is : \" + respData.status] = respData.status;",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"ACTIVATING_AUTOMATIC_EULA_ACCEPTED\",\n  \"eulaText\": \"{{eula-text}}\"\n}\n"
+						},
+						"description": "Pushing back the EULA to accept it\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				},
+				{
+					"name": "Create_License_Pool_Add_Regkey_Accept_status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Status is READY\"] = respData.status === \"READY\";",
+									"",
+									"var    retryCounter = environment.retryCounter;",
+									"var    retryInterval = environment.retryInterval;",
+									"var    retryLimit = environment.retryLimit;",
+									"",
+									"function pausecomp(millis)",
+									"{",
+									"    var date = new Date();",
+									"    var curDate = null;",
+									"    do { curDate = new Date(); }",
+									"    while(curDate-date < millis);",
+									"}",
+									"",
+									"if (respData.status === \"ACTIVATING_AUTOMATIC_EULA_ACCEPTED\") {",
+									"    tests[\"retry-counter value is: \" + retryCounter] = retryCounter;",
+									"    if ( parseInt(retryCounter) < parseInt(retryLimit))",
+									"    {",
+									"        tests[\"retry-counter value is: \" + retryCounter] = retryCounter;",
+									"        postman.setEnvironmentVariable(\"retryCounter\", parseInt(retryCounter) + 1);",
+									"        pausecomp(retryInterval);",
+									"        postman.setNextRequest(\"Check App has been deleted\");",
+									"    } else",
+									"    {",
+									"        postman.setEnvironmentVariable(\"retryCounter\", 0);",
+									"        console.log(\"Resetting, retry counter to 0\");",
+									"        tests[\"Retries Expired\"] = true === false;",
+									"}",
+									"} else {",
+									"    postman.setEnvironmentVariable(\"retryCounter\", 0);",
+									"    console.log(\"Resetting, retry counter to 0\");",
+									"}",
+									"",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "We monitor the status of our RegKey registration until it is approved. \n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3_License_Device",
+			"description": "",
+			"item": [
+				{
+					"name": "License_Unmanaged_Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Device Licensing uuid is : \" + respData.id] = respData.id;",
+									"",
+									"postman.setEnvironmentVariable('licensing-process-id',respData.id);",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}/members\n",
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceAddress\": \"{{bigip-mgmt}}\",\n  \"username\": \"{{bigip-login}}\",\n  \"password\": \"{{bigip-password}}\"\n}\n"
+						},
+						"description": "We use our License Pool/RegKey to activate a BIG-IP\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM\nbigip-mgmt: IP Address of the BIG-IP to license\nbigip-username: username with API access to the BIG-IP (user admin works)\nbigip-passwrd: password of this username "
+					},
+					"response": []
+				},
+				{
+					"name": "Licensing_Device_Check_Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Status is LICENSED\"] = respData.status === \"LICENSED\";",
+									"",
+									"var    retryCounter = environment.retryCounter;",
+									"var    retryInterval = environment.retryInterval;",
+									"var    retryLimit = environment.retryLimit;",
+									"",
+									"function pausecomp(millis)",
+									"{",
+									"    var date = new Date();",
+									"    var curDate = null;",
+									"    do { curDate = new Date(); }",
+									"    while(curDate-date < millis);",
+									"}",
+									"",
+									"if (respData.status === \"INSTALLING\") {",
+									"    tests[\"retry-counter value is: \" + retryCounter] = retryCounter;",
+									"    if ( parseInt(retryCounter) < parseInt(retryLimit))",
+									"    {",
+									"        tests[\"retry-counter value is: \" + retryCounter] = retryCounter;",
+									"        postman.setEnvironmentVariable(\"retryCounter\", parseInt(retryCounter) + 1);",
+									"        pausecomp(retryInterval);",
+									"        postman.setNextRequest(\"Licensing_Device_Check_Status\");",
+									"    } else",
+									"    {",
+									"        postman.setEnvironmentVariable(\"retryCounter\", 0);",
+									"        console.log(\"Resetting, retry counter to 0\");",
+									"        tests[\"Retries Expired\"] = true === false;",
+									"    }",
+									"} else {",
+									"    postman.setEnvironmentVariable(\"retryCounter\", 0);",
+									"    console.log(\"Resetting, retry counter to 0\");",
+									"}",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}/members/{{licensing-process-id}}\n",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceAddress\": \"{{bigip-mgmt}}\",\n  \"username\": \"{{bigip-login}}\",\n  \"password\": \"{{bigip-password}}\"\n}\n"
+						},
+						"description": "We check whether the licensing has been successful\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5_List_Content",
+			"description": "",
+			"item": [
+				{
+					"name": "List_License_Pools",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/",
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6_Revoke_BIGIP_License",
+			"description": "",
+			"item": [
+				{
+					"name": "Delete_License_Pool_Revoke_License_UNManaged_Device",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var respData = JSON.parse(responseBody);",
+									"",
+									"tests[\"Status is LICENSED\"] = respData.status === \"LICENSED\";",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}/members/{{licensing-process-id}}\n",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"{{licensing-process-id}}\",\n  \"username\": \"{{bigip-login}}\",\n  \"password\": \"{{bigip-password}}\"\n}\n"
+						},
+						"description": "We revoke the license assigned to the BIG-IP\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7_Delete_License_Pool",
+			"description": "",
+			"item": [
+				{
+					"name": "Delete_License_Pool_Delete_Regkey",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}/offerings/{{bigip-regkey}}\n",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "We delete the RegKey from our license pool\n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_License_Pool",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://{{bigiq_mgmt}}/mgmt/cm/device/licensing/pool/regkey/licenses/{{license-pool-id}}\n",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-F5-Auth-Token",
+								"value": "{{bigiq_token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "We delete the License pool \n\nvariables: \nbigiq_mgmt : IP Address of BIG-IQ LM"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

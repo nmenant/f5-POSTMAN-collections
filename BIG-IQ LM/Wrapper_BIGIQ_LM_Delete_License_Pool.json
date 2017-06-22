@@ -1,0 +1,34 @@
+{
+	"name":"Wrapper_BIGIQ_LM_Delete_License_Pool",
+	"description":"Execute a chained workflow that delete a license pool from BIG-IQ license Manager",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"bigiq_username":"admin",
+		"bigiq_password":"admin",
+		"bigiq_mgmt":"192.168.143.31",
+	},
+	"globalVarsIncludeFile": "/tmp/Wrapper_BIGIQ_LM_UNLicense_BIGIP-env.json",
+	"saveEnvVars":true,
+	"outputFile":"/tmp/Wrapper_BIGIQ_LM_Delete_License_Pool-run.json",
+	"envOutputFile":"/tmp/Wrapper_BIGIQ_LM_Delete_License_Pool-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to BIG-IQ LM",
+			"options": {
+				"collection":"./BIGIQ_License_Manager.postman_collection",
+				"folder":"1_Auth"
+			}
+		},
+		{
+			"name":"Delete a License Pool from BIG-IQ LM",
+			"skip":false,
+			"options": {
+				"collection":"/BIGIQ_License_Manager.postman_collection",
+				"folder":"7_Delete_License_Pool"
+			}
+		}
+	]
+}

@@ -1,0 +1,37 @@
+{
+	"name":"Wrapper_BIGIQ_LM_License_BIG-IP",
+	"description":"Execute a chained workflow that licenses a BIG-IP with the license pool/RegKey previously created on BIG-IQ license Manager",
+	"globalOptions": {
+		"insecure":true,
+		"reporters":["cli"]
+	},
+	"globalVars": {
+		"bigiq_username":"admin",
+		"bigiq_password":"admin",
+		"bigiq_mgmt":"192.168.143.31",
+		"bigip-mgmt":"192.168.143.27",
+		"bigip-login":"admin",
+		"bigip-password":"admin"
+	},
+	"globalVarsIncludeFile": "/tmp/Wrapper_BIGIQ_LM_Create_License_Pool-env.json",
+	"saveEnvVars":true,
+	"outputFile":"/tmp/Wrapper_BIGIQ_LM_License_BIGIP-run.json",
+	"envOutputFile":"/tmp/Wrapper_BIGIQ_LM_License_BIGIP-env.json",
+	"workflow": [
+		{
+			"name":"Authenticate to BIG-IQ LM",
+			"options": {
+				"collection":"./BIGIQ_License_Manager.postman_collection",
+				"folder":"1_Auth"
+			}
+		},
+		{
+			"name":"License a BIG-IP in UNManaged mode",
+			"skip":false,
+			"options": {
+				"collection":"/BIGIQ_License_Manager.postman_collection",
+				"folder":"3_License_Device"
+			}
+		}
+	]
+}
